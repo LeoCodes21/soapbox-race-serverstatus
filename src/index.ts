@@ -1,5 +1,7 @@
 import * as http from 'http';
+import * as https from 'https';
 import * as debug from 'debug';
+import * as fs from 'fs';
 import { scheduleJob } from 'node-schedule';
 
 import { fetchServers, init as fetchInit } from './ServerFetcher';
@@ -7,14 +9,34 @@ import App from './App';
 
 debug('ts-express:server');
 
+const sslEnabled = !!process.env.SSL_KEY
+    && !!process.env.SSL_CERT
+    && !!process.env.SSL_CA;
+
 const port = normalizePort(process.env.PORT || 3000);
 App.set('port', port);
 
-const server = http.createServer(App);
+let server, httpsServer;
+
+server = http.createServer(App);
+
+if (sslEnabled) {
+    httpsServer = https.createServer({
+        key: fs.readFileSync(process.env.SSL_KEY),
+        cert: fs.readFileSync(process.env.SSL_CERT),
+        ca: fs.readFileSync(process.env.SSL_CA)
+    }, App);
+}
 
 fetchInit().then(() => {
    fetchServers();
    scheduleJob('*/1 * * * *', fetchServers);
+
+   if (httpsServer) {
+       httpsServer.listen(port);
+       httpsServer.on('error', onError);
+       httpsServer.on('listening', onListening);
+   }
 
    server.listen(port);
    server.on('error', onError);
