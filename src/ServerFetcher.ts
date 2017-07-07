@@ -73,7 +73,7 @@ export function fetchServers() {
 
                             connector.update(db, 'info', { ...result }, { lastUpdated: Date.now() }).catch(console.error);
                         });
-                    });
+                    }).catch(console.error);
                 }
             });
         }
