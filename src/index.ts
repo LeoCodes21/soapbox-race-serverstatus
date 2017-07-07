@@ -13,8 +13,10 @@ const sslEnabled = !!process.env.SSL_KEY
     && !!process.env.SSL_CERT
     && !!process.env.SSL_CA;
 
-const port = normalizePort(process.env.PORT || 3000);
+const port = 8000;
+const httpsPort = 8443;
 App.set('port', port);
+App.set('https port', httpsPort);
 
 let server, httpsServer;
 
@@ -33,7 +35,7 @@ fetchInit().then(() => {
    scheduleJob('*/1 * * * *', fetchServers);
 
    if (httpsServer) {
-       httpsServer.listen(port);
+       httpsServer.listen(httpsPort);
        httpsServer.on('error', onError);
        httpsServer.on('listening', onListening);
    }
