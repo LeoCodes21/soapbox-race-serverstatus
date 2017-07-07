@@ -2,7 +2,7 @@ import * as express from "express";
 import * as logger from "morgan";
 import * as ejs from 'ejs';
 
-import { getServers } from './ServerFetcher';
+import {getServers} from './ServerFetcher';
 
 // Creates and configures an ExpressJS web server.
 class App {
@@ -13,6 +13,13 @@ class App {
     //Run configuration methods on the Express instance.
     constructor() {
         this.express = express();
+        this.express.use((req, res, next) => {
+            if (req.url.substr(-1) == '/' && req.url.length > 1)
+                res.redirect(301, req.url.slice(0, -1));
+            else
+                next();
+        });
+
         this.express.set('views', __dirname);
         this.express.engine('ejs', ejs.renderFile);
         this.express.set('view engine', 'ejs');
@@ -34,7 +41,7 @@ class App {
         let router = express.Router();
         // placeholder route handler
         router.get('/', (req, res, next) => {
-            getServers().then(servers => res.render('index', { servers }));
+            getServers().then(servers => res.render('index', {servers}));
         });
 
         this.express.use('/', router);
