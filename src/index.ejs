@@ -1,0 +1,64 @@
+<html lang="en">
+    <head>
+        <title>Soapbox Servers</title>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="IE=Edge">
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet"
+                href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+                integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+                crossorigin="anonymous">
+    </head>
+
+    <body>
+        <div class="container">
+            <h3>Soapbox Server List</h3>
+
+            <div class="row">
+                <% servers.forEach(function (server) { %>
+                    <div class="col-md-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-center">
+                                    <%= server.ip %>
+                                </h3>
+                            </div>
+                            <div class="panel-body" style="padding-top: 2px; padding-bottom: 1px;">
+                                <div class="text-center">
+                                    <h5><%= server.name %></h5>
+                                    <% if (server.messageSrv) { %>
+                                    <small class="text-muted"><%= server.messageSrv%></small>
+                                    <% } %>
+                                    <h5>Online: <span class="text-success"><%= server.onlineNumber %></span> / <%= server.numberOfRegistered %></h5>
+                                </div>
+                            </div>
+                            <div class="panel-footer">
+                                <small class="text-muted">
+                                    Owner(s): <%= server.ownerList || 'None given' %>
+
+                                    &bull;
+                                    Admin(s): <%= (server.adminList || 'None given').split(';').join(', ') %>
+
+                                    &bull;
+                                    Country: <%= server.country || 'GE' %>
+
+                                    &bull;
+                                    Timezone: <%= server.timezone || 'None given' %>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </body>
+
+    <footer>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+                crossorigin="anonymous"></script>
+    </footer>
+</html>
