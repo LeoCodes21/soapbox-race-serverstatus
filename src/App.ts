@@ -13,13 +13,8 @@ class App {
     //Run configuration methods on the Express instance.
     constructor() {
         this.express = express();
-        this.express.use((req, res, next) => {
-            if (req.url.substr(-1) == '/' && req.url.length > 1)
-                res.redirect(301, req.url.slice(0, -1));
-            else
-                next();
-        });
 
+        this.express.enable('strict routing');
         this.express.set('views', __dirname);
         this.express.engine('ejs', ejs.renderFile);
         this.express.set('view engine', 'ejs');
@@ -38,13 +33,18 @@ class App {
         /* This is just to get up and running, and to make sure what we've got is
          * working so far. This function will change when we start to add more
          * API endpoints */
-        let router = express.Router();
+        let router = express.Router({
+            caseSensitive: this.express.get('case sensitive routing'),
+            strict       : this.express.get('strict routing')
+        });
+
         // placeholder route handler
         router.get('/', (req, res, next) => {
             getServers().then(servers => res.render('index', {servers}));
         });
 
         this.express.use('/', router);
+        this.express.use(require('express-slash')());
     }
 
 }
